@@ -1,0 +1,58 @@
+dataset: 'kitti'
+sync_method: loose # strict: strictly mapping and then tracking;
+                   # loose: mapping idx can be later than tracking idx is within the bound of [-self.every_frame-self.every_frame//2, -self.every_frame+self.every_frame//2]
+                   # free: pure parallel, if mesh/vis happens may cause inbalance
+coarse: True
+verbose: False
+meshing:
+  resolution: 128
+tracking:
+  vis_freq: 50
+  vis_inside_freq: 25
+  ignore_edge_W: 20
+  ignore_edge_H: 20
+  seperate_LR: False
+  const_speed_assumption: True
+  lr: 0.0005      
+  pixels: 1000
+  iters: 30
+mapping:
+  every_frame: 10
+  vis_freq: 50
+  vis_inside_freq: 30
+  mesh_freq: 50
+  ckpt_freq: 500
+  keyframe_every: 50
+  mapping_window_size: 10
+  pixels: 1000
+  iters_first: 400
+  iters: 10
+  bound: [[0.0,65],[0.0,40],[0,3.5]] # [[0.0,6.5],[0.0,4.0],[0,3.5]] # 需要修改
+  marching_cubes_bound: [[0.0,13.0],[0.0,4.0],[0,35]] #需要修改
+cam: # parameters for depth image
+  # k for rgb camera: 9.037596e+02 0.000000e+00 6.957519e+02 0.000000e+00 9.019653e+02 2.242509e+02 0.000000e+00 0.000000e+00 1.000000e+00
+  # color image
+  H: 375
+  W: 1242
+  fx: 903.7596
+  fy: 901.96530
+  cx: 695.7519
+  cy: 224.2509
+  # H: 720 
+  # W: 1280
+  # fx: 607.4694213867188
+  # fy: 607.4534912109375
+  # cx: 636.9967041015625
+  # cy: 369.2689514160156
+  png_depth_scale: 1000.0 #for depth image in png format, since most of them are millimiter, need to convert in to meters.
+  crop_edge: 10
+data:
+  input_folder: Datasets/KITTI #/KITTI # 修改
+  output: output/KITTI # 修改
+
+grid_len: # nice-slam中的，但是补充到这里， 需要修改
+  coarse: 2
+  middle: 0.32
+  fine: 0.16
+  color: 0.16
+  bound_divisible: 0.32
