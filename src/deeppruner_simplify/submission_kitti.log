@@ -1,0 +1,137 @@
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_11.png generated at: ./save_dirct/000001_11.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_11.png generated at: ./save_dirct/000001_11.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+submission_kitti.py: Number of model parameters: 7390142
+submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_11.png generated at: ./save_dirct/000000_11.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_10.png generated at: ./save_dirct/000001_10.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000001_11.png generated at: ./save_dirct/000001_11.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000002_10.png generated at: ./save_dirct/000002_10.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000002_11.png generated at: ./save_dirct/000002_11.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000003_10.png generated at: ./save_dirct/000003_10.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000003_11.png generated at: ./save_dirct/000003_11.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000004_10.png generated at: ./save_dirct/000004_10.png
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000004_11.png generated at: ./save_dirct/000004_11.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Disparity for /home/feiran/Desktop/RGB_Slam/DeepPruner-master/deeppruner_simplify/data/data_scene_flow/testing/image_2/000000_10.png generated at: ./save_dirct/000000_10.png
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
+ori_submission_kitti.py: Number of model parameters: 7390142
+ori_submission_kitti.py: loading model...
