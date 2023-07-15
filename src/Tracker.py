@@ -29,7 +29,6 @@ class Tracker(object):
         self.sync_method = cfg['sync_method']
 
         self.idx = slam.idx
-        self.nice = slam.nice
         self.bound = slam.bound
         self.mesher = slam.mesher
         self.output = slam.output
@@ -102,18 +101,18 @@ class Tracker(object):
         random_index = torch.rand(batch_size, device=device)
         batch_rays_o, batch_rays_d, batch_gt_depth, batch_gt_color = get_samples(random_index, 
             Hedge, H-Hedge, Wedge, W-Wedge, batch_size, H, W, fx, fy, cx, cy, c2w, gt_depth, gt_color, self.device, flag='tracker')
-        if self.nice:
-            # should pre-filter those out of bounding box depth value
-            with torch.no_grad():
-                det_rays_o = batch_rays_o.clone().detach().unsqueeze(-1)  # (N, 3, 1)
-                det_rays_d = batch_rays_d.clone().detach().unsqueeze(-1)  # (N, 3, 1)
-                t = (self.bound.unsqueeze(0).to(device)-det_rays_o)/det_rays_d
-                t, _ = torch.min(torch.max(t, dim=2)[0], dim=1)
-                inside_mask = t >= batch_gt_depth
-            batch_rays_d = batch_rays_d[inside_mask]
-            batch_rays_o = batch_rays_o[inside_mask]
-            batch_gt_depth = batch_gt_depth[inside_mask]
-            batch_gt_color = batch_gt_color[inside_mask]
+
+        # should pre-filter those out of bounding box depth value
+        with torch.no_grad():
+            det_rays_o = batch_rays_o.clone().detach().unsqueeze(-1)  # (N, 3, 1)
+            det_rays_d = batch_rays_d.clone().detach().unsqueeze(-1)  # (N, 3, 1)
+            t = (self.bound.unsqueeze(0).to(device)-det_rays_o)/det_rays_d
+            t, _ = torch.min(torch.max(t, dim=2)[0], dim=1)
+            inside_mask = t >= batch_gt_depth
+        batch_rays_d = batch_rays_d[inside_mask]
+        batch_rays_o = batch_rays_o[inside_mask]
+        batch_gt_depth = batch_gt_depth[inside_mask]
+        batch_gt_color = batch_gt_color[inside_mask]
 
         ret = self.renderer.render_batch_ray(
             self.c, self.decoders, batch_rays_d, batch_rays_o,  self.device, stage='color',  gt_depth=batch_gt_depth)

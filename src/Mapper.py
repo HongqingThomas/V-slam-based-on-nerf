@@ -26,7 +26,6 @@ class Mapper(object):
         self.coarse_mapper = coarse_mapper
 
         self.idx = slam.idx
-        self.nice = slam.nice
         self.c = slam.shared_c
         self.bound = slam.bound
         self.logger = slam.logger
@@ -84,9 +83,8 @@ class Mapper(object):
         if self.save_selected_keyframes_info:
             self.selected_keyframes = {}
 
-        if self.nice:
-            if coarse_mapper:
-                self.keyframe_selection_method = 'global'
+        if coarse_mapper:
+            self.keyframe_selection_method = 'global'
 
         self.keyframe_dict = []
         self.keyframe_list = []
@@ -315,54 +313,51 @@ class Mapper(object):
         fine_grid_para = []
         color_grid_para = []
         gt_depth_np = cur_gt_depth.cpu().numpy()
-        if self.nice:
-            if self.frustum_feature_selection:
-                masked_c_grad = {}
-                mask_c2w = cur_c2w
-            for key, val in c.items():
-                if not self.frustum_feature_selection:
-                    val = Variable(val.to(device), requires_grad=True)
-                    c[key] = val
-                    if key == 'grid_coarse':
-                        coarse_grid_para.append(val)
-                    elif key == 'grid_middle':
-                        middle_grid_para.append(val)
-                    elif key == 'grid_fine':
-                        fine_grid_para.append(val)
-                    elif key == 'grid_color':
-                        color_grid_para.append(val)
 
-                else:
-                    mask = self.get_mask_from_c2w(
-                        mask_c2w, key, val.shape[2:], gt_depth_np)
-                    mask = torch.from_numpy(mask).permute(2, 1, 0).unsqueeze(
-                        0).unsqueeze(0).repeat(1, val.shape[1], 1, 1, 1)
-                    val = val.to(device)
-                    # val_grad is the optimizable part, other parameters will be fixed
-                    val_grad = val[mask].clone()
-                    val_grad = Variable(val_grad.to(
-                        device), requires_grad=True)
-                    masked_c_grad[key] = val_grad
-                    masked_c_grad[key+'mask'] = mask
-                    if key == 'grid_coarse':
-                        coarse_grid_para.append(val_grad)
-                    elif key == 'grid_middle':
-                        middle_grid_para.append(val_grad)
-                    elif key == 'grid_fine':
-                        fine_grid_para.append(val_grad)
-                    elif key == 'grid_color':
-                        color_grid_para.append(val_grad)
+        if self.frustum_feature_selection:
+            masked_c_grad = {}
+            mask_c2w = cur_c2w
+        for key, val in c.items():
+            if not self.frustum_feature_selection:
+                val = Variable(val.to(device), requires_grad=True)
+                c[key] = val
+                if key == 'grid_coarse':
+                    coarse_grid_para.append(val)
+                elif key == 'grid_middle':
+                    middle_grid_para.append(val)
+                elif key == 'grid_fine':
+                    fine_grid_para.append(val)
+                elif key == 'grid_color':
+                    color_grid_para.append(val)
 
-        if self.nice:
-            if not self.fix_fine:
-                decoders_para_list += list(
-                    self.decoders.fine_decoder.parameters())
-            if not self.fix_color:
-                decoders_para_list += list(
-                    self.decoders.color_decoder.parameters())
-        else:
-            # imap*, single MLP
-            decoders_para_list += list(self.decoders.parameters())
+            else:
+                mask = self.get_mask_from_c2w(
+                    mask_c2w, key, val.shape[2:], gt_depth_np)
+                mask = torch.from_numpy(mask).permute(2, 1, 0).unsqueeze(
+                    0).unsqueeze(0).repeat(1, val.shape[1], 1, 1, 1)
+                val = val.to(device)
+                # val_grad is the optimizable part, other parameters will be fixed
+                val_grad = val[mask].clone()
+                val_grad = Variable(val_grad.to(
+                    device), requires_grad=True)
+                masked_c_grad[key] = val_grad
+                masked_c_grad[key+'mask'] = mask
+                if key == 'grid_coarse':
+                    coarse_grid_para.append(val_grad)
+                elif key == 'grid_middle':
+                    middle_grid_para.append(val_grad)
+                elif key == 'grid_fine':
+                    fine_grid_para.append(val_grad)
+                elif key == 'grid_color':
+                    color_grid_para.append(val_grad)
+
+        if not self.fix_fine:
+            decoders_para_list += list(
+                self.decoders.fine_decoder.parameters())
+        if not self.fix_color:
+            decoders_para_list += list(
+                self.decoders.color_decoder.parameters())
+
 
         if self.BA:
             camera_tensor_list = []
@@ -383,104 +378,73 @@ class Mapper(object):
                     gt_camera_tensor = get_tensor_from_camera(gt_c2w)
                     gt_camera_tensor_list.append(gt_camera_tensor)
 
-        if self.nice:
-            if self.BA:
-                # The corresponding lr will be set according to which stage the optimization is in
-                optimizer = torch.optim.Adam([{'params': decoders_para_list, 'lr': 0},
-                                              {'params': coarse_grid_para, 'lr': 0},
-                                              {'params': middle_grid_para, 'lr': 0},
-                                              {'params': fine_grid_para, 'lr': 0},
-                                              {'params': color_grid_para, 'lr': 0},
-                                              {'params': camera_tensor_list, 'lr': 0}])
-            else:
-                optimizer = torch.optim.Adam([{'params': decoders_para_list, 'lr': 0},
-                                              {'params': coarse_grid_para, 'lr': 0},
-                                              {'params': middle_grid_para, 'lr': 0},
-                                              {'params': fine_grid_para, 'lr': 0},
-                                              {'params': color_grid_para, 'lr': 0}])
+        if self.BA:
+            # The corresponding lr will be set according to which stage the optimization is in
+            optimizer = torch.optim.Adam([{'params': decoders_para_list, 'lr': 0},
+                                          {'params': coarse_grid_para, 'lr': 0},
+                                          {'params': middle_grid_para, 'lr': 0},
+                                          {'params': fine_grid_para, 'lr': 0},
+                                          {'params': color_grid_para, 'lr': 0},
+                                          {'params': camera_tensor_list, 'lr': 0}])
         else:
-            # imap*, single MLP
-            if self.BA:
-                optimizer = torch.optim.Adam([{'params': decoders_para_list, 'lr': 0},
-                                              {'params': camera_tensor_list, 'lr': 0}])
-            else:
-                optimizer = torch.optim.Adam(
-                    [{'params': decoders_para_list, 'lr': 0}])
-            from torch.optim.lr_scheduler import StepLR
-            scheduler = StepLR(optimizer, step_size=200, gamma=0.8)
-        
+            optimizer = torch.optim.Adam([{'params': decoders_para_list, 'lr': 0},
+                                          {'params': coarse_grid_para, 'lr': 0},
+                                          {'params': middle_grid_para, 'lr': 0},
+                                          {'params': fine_grid_para, 'lr': 0},
+                                          {'params': color_grid_para, 'lr': 0}])
+
         loss = 1000
 
         for joint_iter in range(num_joint_iters):
-            if self.nice:
-                if self.frustum_feature_selection:
-                    for key, val in c.items():
-                        if (self.coarse_mapper and 'coarse' in key) or \
-                                ((not self.coarse_mapper) and ('coarse' not in key)):
-                            val_grad = masked_c_grad[key]
-                            mask = masked_c_grad[key+'mask']
-                            val = val.to(device)
-                            val[mask] = val_grad
-                            c[key] = val
+            if self.frustum_feature_selection:
+                for key, val in c.items():
+                    if (self.coarse_mapper and 'coarse' in key) or \
+                            ((not self.coarse_mapper) and ('coarse' not in key)):
+                        val_grad = masked_c_grad[key]
+                        mask = masked_c_grad[key+'mask']
+                        val = val.to(device)
+                        val[mask] = val_grad
+                        c[key] = val
 
-                if self.coarse_mapper:
-                    self.stage = 'coarse'
-                elif joint_iter <= int(num_joint_iters*self.middle_iter_ratio):
-                    self.stage = 'middle'
-                elif joint_iter <= int(num_joint_iters*self.fine_iter_ratio):
-                    self.stage = 'fine'
-                else:
-                    self.stage = 'color'
-
-                decay_threshold = self.decay_threshold
-                decay_second_threshold = self.decay_second_threshold
-                decay_scale = self.decay_scale
-                if loss < decay_second_threshold:
-                    optimizer.param_groups[0]['lr'] = cfg['mapping']['stage'][self.stage]['decoders_lr']*lr_factor * decay_scale * decay_scale
-                    optimizer.param_groups[1]['lr'] = cfg['mapping']['stage'][self.stage]['coarse_lr']*lr_factor * decay_scale * decay_scale
-                    optimizer.param_groups[2]['lr'] = cfg['mapping']['stage'][self.stage]['middle_lr']*lr_factor * decay_scale * decay_scale
-                    optimizer.param_groups[3]['lr'] = cfg['mapping']['stage'][self.stage]['fine_lr']*lr_factor * decay_scale * decay_scale
-                    optimizer.param_groups[4]['lr'] = cfg['mapping']['stage'][self.stage]['color_lr']*lr_factor * decay_scale * decay_scale
-                elif loss < decay_threshold:
-                    optimizer.param_groups[0]['lr'] = cfg['mapping']['stage'][self.stage]['decoders_lr']*lr_factor * decay_scale
-                    optimizer.param_groups[1]['lr'] = cfg['mapping']['stage'][self.stage]['coarse_lr']*lr_factor * decay_scale
-                    optimizer.param_groups[2]['lr'] = cfg['mapping']['stage'][self.stage]['middle_lr']*lr_factor * decay_scale
-                    optimizer.param_groups[3]['lr'] = cfg['mapping']['stage'][self.stage]['fine_lr']*lr_factor * decay_scale
-                    optimizer.param_groups[4]['lr'] = cfg['mapping']['stage'][self.stage]['color_lr']*lr_factor * decay_scale
-                else:
-                    optimizer.param_groups[0]['lr'] = cfg['mapping']['stage'][self.stage]['decoders_lr']*lr_factor
-                    optimizer.param_groups[1]['lr'] = cfg['mapping']['stage'][self.stage]['coarse_lr']*lr_factor
-                    optimizer.param_groups[2]['lr'] = cfg['mapping']['stage'][self.stage]['middle_lr']*lr_factor
-                    optimizer.param_groups[3]['lr'] = cfg['mapping']['stage'][self.stage]['fine_lr']*lr_factor
-                    optimizer.param_groups[4]['lr'] = cfg['mapping']['stage'][self.stage]['color_lr']*lr_factor
-                
-                if self.BA:
-                    if self.stage == 'color':
-                        if loss < decay_second_threshold:
-                            optimizer.param_groups[5]['lr'] = self.BA_cam_lr * decay_scale * decay_scale
-                        elif loss < decay_threshold:
-                            optimizer.param_groups[5]['lr'] = self.BA_cam_lr * decay_scale
-                        else:
-                            optimizer.param_groups[5]['lr'] = self.BA_cam_lr
+            if self.coarse_mapper:
+                self.stage = 'coarse'
+            elif joint_iter <= int(num_joint_iters*self.middle_iter_ratio):
+                self.stage = 'middle'
+            elif joint_iter <= int(num_joint_iters*self.fine_iter_ratio):
+                self.stage = 'fine'
             else:
                 self.stage = 'color'
-                if loss < decay_second_threshold:
-                    optimizer.param_groups[0]['lr'] = cfg['mapping']['imap_decoders_lr'] * decay_scale * decay_scale
-                elif loss < decay_threshold:
-                    optimizer.param_groups[0]['lr'] = cfg['mapping']['imap_decoders_lr'] * decay_scale
-                else:
-                    optimizer.param_groups[0]['lr'] = cfg['mapping']['imap_decoders_lr']
-                if self.BA:
-                    if loss < decay_second_threshold:
-                        optimizer.param_groups[1]['lr'] = self.BA_cam_lr * decay_scale * decay_scale
-                    elif loss < decay_threshold:
-                        optimizer.param_groups[1]['lr'] = self.BA_cam_lr * decay_scale
-                    else:
-                        optimizer.param_groups[1]['lr'] = self.BA_cam_lr
 
-            # if (not (idx == 0 and self.no_vis_on_first_frame)) and ('Demo' not in self.output):
-            #     self.visualizer.vis(
-            #         idx, joint_iter, cur_gt_depth, cur_gt_color, cur_c2w, self.c, self.decoders)
+            decay_threshold = self.decay_threshold
+            decay_second_threshold = self.decay_second_threshold
+            decay_scale = self.decay_scale
+            if loss < decay_second_threshold:
+                optimizer.param_groups[0]['lr'] = cfg['mapping']['stage'][self.stage]['decoders_lr']*lr_factor * decay_scale * decay_scale
+                optimizer.param_groups[1]['lr'] = cfg['mapping']['stage'][self.stage]['coarse_lr']*lr_factor * decay_scale * decay_scale
+                optimizer.param_groups[2]['lr'] = cfg['mapping']['stage'][self.stage]['middle_lr']*lr_factor * decay_scale * decay_scale
+                optimizer.param_groups[3]['lr'] = cfg['mapping']['stage'][self.stage]['fine_lr']*lr_factor * decay_scale * decay_scale
+                optimizer.param_groups[4]['lr'] = cfg['mapping']['stage'][self.stage]['color_lr']*lr_factor * decay_scale * decay_scale
+            elif loss < decay_threshold:
+                optimizer.param_groups[0]['lr'] = cfg['mapping']['stage'][self.stage]['decoders_lr']*lr_factor * decay_scale
+                optimizer.param_groups[1]['lr'] = cfg['mapping']['stage'][self.stage]['coarse_lr']*lr_factor * decay_scale
+                optimizer.param_groups[2]['lr'] = cfg['mapping']['stage'][self.stage]['middle_lr']*lr_factor * decay_scale
+                optimizer.param_groups[3]['lr'] = cfg['mapping']['stage'][self.stage]['fine_lr']*lr_factor * decay_scale
+                optimizer.param_groups[4]['lr'] = cfg['mapping']['stage'][self.stage]['color_lr']*lr_factor * decay_scale
+            else:
+                optimizer.param_groups[0]['lr'] = cfg['mapping']['stage'][self.stage]['decoders_lr']*lr_factor
+                optimizer.param_groups[1]['lr'] = cfg['mapping']['stage'][self.stage]['coarse_lr']*lr_factor
+                optimizer.param_groups[2]['lr'] = cfg['mapping']['stage'][self.stage]['middle_lr']*lr_factor
+                optimizer.param_groups[3]['lr'] = cfg['mapping']['stage'][self.stage]['fine_lr']*lr_factor
+                optimizer.param_groups[4]['lr'] = cfg['mapping']['stage'][self.stage]['color_lr']*lr_factor
+
+            if self.BA:
+                if self.stage == 'color':
+                    if loss < decay_second_threshold:
+                        optimizer.param_groups[5]['lr'] = self.BA_cam_lr * decay_scale * decay_scale
+                    elif loss < decay_threshold:
+                        optimizer.param_groups[5]['lr'] = self.BA_cam_lr * decay_scale
+                    else:
+                        optimizer.param_groups[5]['lr'] = self.BA_cam_lr
 
             optimizer.zero_grad()
             batch_rays_d_list = []
@@ -550,12 +514,6 @@ class Mapper(object):
             depth, uncertainty, color = ret
 
             depth_mask = (batch_gt_depth > 0)
-            # loss = torch.abs(
-            #     batch_gt_depth[depth_mask]-depth[depth_mask]).sum()
-            # if ((not self.nice) or (self.stage == 'color')):
-            #     color_loss = torch.abs(batch_gt_color - color).sum()
-            #     weighted_color_loss = self.w_color_loss*color_loss
-            #     loss += weighted_color_loss
 
             loss = torch.abs(
                 batch_gt_depth[depth_mask]-depth[depth_mask]).mean()
@@ -564,25 +522,14 @@ class Mapper(object):
                 weighted_color_loss = self.w_color_loss*color_loss
                 loss += weighted_color_loss
 
-            # # for imap*, it uses volume density
-            # regulation = (not self.occupancy)
-            # if regulation:
-            #     point_sigma = self.renderer.regulation(
-            #         c, self.decoders, batch_rays_d, batch_rays_o, batch_gt_depth, device, self.stage)
-            #     regulation_loss = torch.abs(point_sigma).sum()
-            #     loss += 0.0005*regulation_loss
-
             print(f'mapper re-rendering loss: {loss:.4f}')
 
             loss.backward(retain_graph=False)
             optimizer.step()
-            if not self.nice:
-                # for imap*
-                scheduler.step()
             optimizer.zero_grad()
 
             # put selected and updated features back to the grid
-            if self.nice and self.frustum_feature_selection:
+            if self.frustum_feature_selection:
                 for key, val in c.items():
                     if (self.coarse_mapper and 'coarse' in key) or \
                             ((not self.coarse_mapper) and ('coarse' not in key)):
@@ -744,10 +691,7 @@ class Mapper(object):
                     self.fix_color = True
                     self.frustum_feature_selection = False
                 else:
-                    if self.nice:
-                        outer_joint_iters = 1
-                    else:
-                        outer_joint_iters = 3
+                    outer_joint_iters = 1
 
             else:
                 outer_joint_iters = 1

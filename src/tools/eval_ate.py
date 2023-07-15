@@ -265,16 +265,9 @@ if __name__ == '__main__':
         description='Arguments to eval the tracking ATE.'
     )
     parser.add_argument('config', type=str, help='Path to config file.')
-    parser.add_argument('--output', type=str,
-                        help='output folder, this have higher priority, can overwrite the one inconfig file')
-    nice_parser = parser.add_mutually_exclusive_group(required=False)
-    nice_parser.add_argument('--nice', dest='nice', action='store_true')
-    nice_parser.add_argument('--imap', dest='nice', action='store_false')
-    parser.set_defaults(nice=True)
 
     args = parser.parse_args()
-    cfg = config.load_config(
-        args.config, 'configs/nice_slam.yaml' if args.nice else 'configs/imap.yaml')
+    cfg = config.load_config(args.config, 'configs/base_config.yaml')
     scale = cfg['scale']
     output = cfg['data']['output'] if args.output is None else args.output
     cofusion = ('cofusion' in args.config) or ('CoFusion' in args.config)

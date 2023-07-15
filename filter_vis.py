@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
-color_image = cv2.imread('/home/jazz-lab/Documents/nice-slam/Datasets/Highbayparking2/color/306.jpg')
+color_image = cv2.imread('/home/jazz-lab/Documents/Datasets/Highbayparking2/color/306.jpg')
 color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
-depth_image = cv2.imread('/home/jazz-lab/Documents/nice-slam/Datasets/Highbayparking2/depth/306.png',cv2.IMREAD_UNCHANGED)
+depth_image = cv2.imread('/home/jazz-lab/Documents/Datasets/Highbayparking2/depth/306.png',cv2.IMREAD_UNCHANGED)
 color_image = color_image / 255.
 depth_image = depth_image.astype(np.float32) / 1000.
 

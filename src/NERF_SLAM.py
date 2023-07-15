@@ -20,9 +20,8 @@ torch.multiprocessing.set_sharing_strategy('file_system')
 # torch.multiprocessing.set_sharing_strategy('file_descriptor')
 
 
-class NICE_SLAM():
+class NERF_SLAM():
     """
-    NICE_SLAM main class.
     Mainly allocate shared resources, and dispatch mapping and tracking process.
     """
 
@@ -30,34 +29,71 @@ class NICE_SLAM():
 
         self.cfg = cfg
         self.args = args
-        self.nice = args.nice
 
+        self.output = cfg['data']['output']
+        self.ckptsdir = os.path.join(self.output, 'ckpts')
+        os.makedirs(self.output, exist_ok=True)
+        os.makedirs(self.ckptsdir, exist_ok=True)
+        os.makedirs(f'{self.output}/mesh', exist_ok=True)
+
+        self.scale = cfg['scale']
         self.coarse = cfg['coarse']
         self.occupancy = cfg['occupancy']
         self.low_gpu_mem = cfg['low_gpu_mem']
         self.verbose = cfg['verbose']
         self.dataset = cfg['dataset']
         self.coarse_bound_enlarge = cfg['model']['coarse_bound_enlarge']
-        self.output = cfg['data']['output']
-        self.ckptsdir = os.path.join(self.output, 'ckpts')
-        os.makedirs(self.output, exist_ok=True)
-        os.makedirs(self.ckptsdir, exist_ok=True)
-        os.makedirs(f'{self.output}/mesh', exist_ok=True)
+
         self.H, self.W, self.fx, self.fy, self.cx, self.cy = cfg['cam']['H'], cfg['cam'][
             'W'], cfg['cam']['fx'], cfg['cam']['fy'], cfg['cam']['cx'], cfg['cam']['cy']
-        self.update_cam()
+        if self.cfg['cam']['crop_edge'] > 0:
+            self.H -= self.cfg['cam']['crop_edge']*2
+            self.W -= self.cfg['cam']['crop_edge']*2
+            self.cx -= self.cfg['cam']['crop_edge']
+            self.cy -= self.cfg['cam']['crop_edge']
 
-        model = config.get_model(cfg)
-        self.shared_decoders = model
+        self.shared_decoders = config.get_model(cfg)
 
-        self.scale = cfg['scale']
+        # load bound for each grid
+        self.bound = torch.from_numpy(
+            np.array(cfg['mapping']['bound']) * self.scale)
+        bound_divisible = cfg['grid_len']['bound_divisible']
+        # enlarge the bound a bit to allow it divisible by bound_divisible
+        self.bound[:, 1] = (((self.bound[:, 1] - self.bound[:, 0]) /
+                             bound_divisible).int() + 1) * bound_divisible + self.bound[:, 0]
+        self.shared_decoders.bound = self.bound
+        self.shared_decoders.middle_decoder.bound = self.bound
+        self.shared_decoders.fine_decoder.bound = self.bound
+        self.shared_decoders.color_decoder.bound = self.bound
+        if self.coarse:
+            self.shared_decoders.coarse_decoder.bound = self.bound * self.coarse_bound_enlarge
 
-        self.load_bound(cfg)
-        if self.nice:
-            self.load_pretrain(cfg)
-            self.grid_init(cfg)
-        else:
-            self.shared_c = {}
+        # load pretrained parameters
+        if self.coarse:
+            ckpt = torch.load(cfg['pretrained_decoders']['coarse'],
+                              map_location=cfg['mapping']['device'])
+            coarse_dict = {}
+            for key, val in ckpt['model'].items():
+                if ('decoder' in key) and ('encoder' not in key):
+                    key = key[8:]
+                    coarse_dict[key] = val
+            self.shared_decoders.coarse_decoder.load_state_dict(coarse_dict)
+        ckpt = torch.load(cfg['pretrained_decoders']['middle_fine'],
+                          map_location=cfg['mapping']['device'])
+        middle_dict = {}
+        fine_dict = {}
+        for key, val in ckpt['model'].items():
+            if ('decoder' in key) and ('encoder' not in key):
+                if 'coarse' in key:
+                    key = key[8+7:]
+                    middle_dict[key] = val
+                elif 'fine' in key:
+                    key = key[8+5:]
+                    fine_dict[key] = val
+        self.shared_decoders.middle_decoder.load_state_dict(middle_dict)
+        self.shared_decoders.fine_decoder.load_state_dict(fine_dict)
+
+        self.grid_init(cfg)
 
         # need to use spawn
         try:
@@ -102,80 +138,7 @@ class NICE_SLAM():
         self.tracker = Tracker(cfg, args, self)
 
 
-    def update_cam(self):
-        """
-        Update the camera intrinsics according to pre-processing config, 
-        such as resize or edge crop.
-        """
-        # croping will change H, W, cx, cy, so need to change here
-        if self.cfg['cam']['crop_edge'] > 0:
-            self.H -= self.cfg['cam']['crop_edge']*2
-            self.W -= self.cfg['cam']['crop_edge']*2
-            self.cx -= self.cfg['cam']['crop_edge']
-            self.cy -= self.cfg['cam']['crop_edge']
-
-    def load_bound(self, cfg):
-        """
-        Pass the scene bound parameters to different decoders and self.
-
-        Args:
-            cfg (dict): parsed config dict.
-        """
-        # scale the bound if there is a global scaling factor
-        self.bound = torch.from_numpy(
-            np.array(cfg['mapping']['bound'])*self.scale)
-        bound_divisible = cfg['grid_len']['bound_divisible']
-        # enlarge the bound a bit to allow it divisible by bound_divisible
-        self.bound[:, 1] = (((self.bound[:, 1]-self.bound[:, 0]) /
-                            bound_divisible).int()+1)*bound_divisible+self.bound[:, 0]
-        
-        self.shared_decoders.bound = self.bound
-        self.shared_decoders.middle_decoder.bound = self.bound
-        self.shared_decoders.fine_decoder.bound = self.bound
-        self.shared_decoders.color_decoder.bound = self.bound
-        if self.coarse:
-            self.shared_decoders.coarse_decoder.bound = self.bound*self.coarse_bound_enlarge
-
-    def load_pretrain(self, cfg):
-        """
-        Load parameters of pretrained ConvOnet checkpoints to the decoders.
-
-        Args:
-            cfg (dict): parsed config dict
-        """
-
-        if self.coarse:
-            ckpt = torch.load(cfg['pretrained_decoders']['coarse'],
-                              map_location=cfg['mapping']['device'])
-            coarse_dict = {}
-            for key, val in ckpt['model'].items():
-                if ('decoder' in key) and ('encoder' not in key):
-                    key = key[8:]
-                    coarse_dict[key] = val
-            self.shared_decoders.coarse_decoder.load_state_dict(coarse_dict)
-
-        ckpt = torch.load(cfg['pretrained_decoders']['middle_fine'],
-                          map_location=cfg['mapping']['device'])
-        middle_dict = {}
-        fine_dict = {}
-        for key, val in ckpt['model'].items():
-            if ('decoder' in key) and ('encoder' not in key):
-                if 'coarse' in key:
-                    key = key[8+7:]
-                    middle_dict[key] = val
-                elif 'fine' in key:
-                    key = key[8+5:]
-                    fine_dict[key] = val
-        self.shared_decoders.middle_decoder.load_state_dict(middle_dict)
-        self.shared_decoders.fine_decoder.load_state_dict(fine_dict)
-
     def grid_init(self, cfg):
-        """
-        Initialize the hierarchical feature grids.
-
-        Args:
-            cfg (dict): parsed config dict.
-        """
         if self.coarse:
             coarse_grid_len = cfg['grid_len']['coarse']
             self.coarse_grid_len = coarse_grid_len
@@ -190,8 +153,6 @@ class NICE_SLAM():
         c_dim = cfg['model']['c_dim']
         xyz_len = self.bound[:, 1]-self.bound[:, 0]
 
-        # If you have questions regarding the swap of axis 0 and 2,
-        # please refer to https://github.com/cvg/nice-slam/issues/24
 
         if self.coarse:
             coarse_key = 'grid_coarse'
@@ -230,39 +191,18 @@ class NICE_SLAM():
         self.shared_c = c
 
     def tracking(self, rank):
-        """
-        Tracking Thread.
-
-        Args:
-            rank (int): Thread ID.
-        """
-
-        # should wait until the mapping of first frame is finished
-        while (1):
+        a = 0
+        while (a == 0):
             if self.mapping_first_frame[0] == 1:
-                break
+                a = 1
             time.sleep(1)
 
         self.tracker.run()
 
     def mapping(self, rank):
-        """
-        Mapping Thread. (updates middle, fine, and color level)
-
-        Args:
-            rank (int): Thread ID.
-        """
-
         self.mapper.run()
 
     def coarse_mapping(self, rank):
-        """
-        Coarse mapping Thread. (updates coarse level)
-
-        Args:
-            rank (int): Thread ID.
-        """
-
         self.coarse_mapper.run()
 
     def run(self):
@@ -273,18 +213,18 @@ class NICE_SLAM():
         processes = []
         for rank in range(2):
             if rank == 0:
-                p = mp.Process(target=self.tracking, args=(rank, ))
+                stream = mp.Process(target=self.tracking, args=(rank, ))
             elif rank == 1:
-                p = mp.Process(target=self.mapping, args=(rank, ))
+                stream = mp.Process(target=self.mapping, args=(rank, ))
             elif rank == 2:
                 if self.coarse:
-                    p = mp.Process(target=self.coarse_mapping, args=(rank, ))
+                    stream = mp.Process(target=self.coarse_mapping, args=(rank, ))
                 else:
                     continue
-            p.start()
-            processes.append(p)
-        for p in processes:
-            p.join()
+            stream.start()
+            processes.append(stream)
+        for stream in processes:
+            stream.join()
 
 
 # This part is required by torch.multiprocessing

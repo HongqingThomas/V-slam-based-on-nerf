@@ -17,7 +17,7 @@ class Mesher(object):
         Args:
             cfg (dict): parsed config dict.
             args (class 'argparse.Namespace'): argparse arguments.
-            slam (class NICE-SLAM): NICE-SLAM main class.
+            slam : Nerf-slam class
             points_batch_size (int): maximum points size for query in one batch. 
                                      Used to alleviate GPU memeory usage. Defaults to 500000.
             ray_batch_size (int): maximum ray size for query in one batch. 
@@ -39,7 +39,6 @@ class Mesher(object):
         self.depth_test = cfg['meshing']['depth_test']
         
         self.bound = slam.bound
-        self.nice = slam.nice
         self.verbose = slam.verbose
 
         self.marching_cubes_bound = torch.from_numpy(
@@ -305,10 +304,7 @@ class Mesher(object):
             mask = mask_x & mask_y & mask_z
 
             pi = pi.unsqueeze(0)
-            if self.nice:
-                ret = decoders(pi, c_grid=c, stage=stage)
-            else:
-                ret = decoders(pi, c_grid=None)
+            ret = decoders(pi, c_grid=c, stage=stage)
             ret = ret.squeeze(0)
             if len(ret.shape) == 1 and ret.shape[0] == 4:
                 ret = ret.unsqueeze(0)

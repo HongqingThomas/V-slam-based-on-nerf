@@ -66,7 +66,6 @@ def get_model(cfg):
 
     Args:
         cfg (dict): config dictionary.
-        nice (bool, optional): if use NICE-SLAM. Defaults to True.
 
     Returns:
        model (nn.module): network model.

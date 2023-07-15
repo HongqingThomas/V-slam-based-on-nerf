@@ -50,7 +50,7 @@ data:
   input_folder: Datasets/KITTI #/KITTI # 修改
   output: output/KITTI # 修改
 
-grid_len: # nice-slam中的，但是补充到这里， 需要修改
+grid_len:
   coarse: 2
   middle: 0.32
   fine: 0.16

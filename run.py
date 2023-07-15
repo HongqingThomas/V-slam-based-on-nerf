@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 from src import config
-from src.NICE_SLAM import NICE_SLAM
+from src.NERF_SLAM import NERF_SLAM
 
 
 def setup_seed(seed):
@@ -23,19 +23,13 @@ def main():
 
 
     parser = argparse.ArgumentParser(
-        description='Arguments for running the NICE-SLAM.'
+        description='Arguments for running the SLAM system.'
     )
     parser.add_argument('config', type=str, help='Path to config file.')
-
-    nice_parser = parser.add_mutually_exclusive_group(required=False)
-    nice_parser.add_argument('--nice', dest='nice', action='store_true')
-    parser.set_defaults(nice=True)
     args = parser.parse_args()
+    cfg = config.load_config(args.config, 'configs/base_config.yaml')
 
-    cfg = config.load_config(
-        args.config, 'configs/nice_slam.yaml' if args.nice else 'configs/imap.yaml')
-
-    slam = NICE_SLAM(cfg, args)
+    slam = NERF_SLAM(cfg, args)
 
     slam.run()
 
